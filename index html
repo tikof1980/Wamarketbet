@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WAMARKET.BET - Pronostics Sportifs Premium</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Arial,sans-serif;background:#0a0e1a;color:#fff}
+header{background:#1a1f35;padding:12px 15px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #f0b429;position:sticky;top:0;z-index:999}
+.logo{font-size:22px;font-weight:900;color:#f0b429}
+.logo span{color:#fff}
+.live-badge{background:#ff3333;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:bold;animation:pulse 1s infinite;color:#fff}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+nav{background:#111827;display:flex;gap:5px;padding:10px;overflow-x:auto;border-bottom:2px solid #f0b429;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+.nav-btn{background:#1f2937;color:#fff;border:none;padding:9px 16px;border-radius:20px;cursor:pointer;white-space:nowrap;font-size:12px;font-weight:600;transition:all 0.3s}
+.nav-btn.active,.nav-btn:hover{background:#f0b429;color:#000}
+.hero{background:#1a1f35;padding:20px;text-align:center;border-bottom:1px solid #333}
+.hero h1{font-size:20px;color:#f0b429;margin-bottom:6px;font-weight:900}
+.hero p{color:#aaa;font-size:12px}
+.stats-bar{display:flex;justify-content:space-around;padding:12px;background:#111827;border-bottom:1px solid #333}
+.stat{text-align:center}
+.stat-num{font-size:20px;font-weight:900;color:#f0b429}
+.stat-label{font-size:10px;color:#aaa}
+.section{display:none;padding:15px}
+.section.active{display:block}
+.league-title{color:#f0b429;font-size:13px;font-weight:bold;padding:8px 0;border-bottom:1px solid #333;margin-bottom:10px;margin-top:15px}
+.match-card{background:#1f2937;border-radius:10px;padding:12px;margin-bottom:10px;border-left:3px solid #f0b429}
+.match-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.match-time{background:#f0b429;color:#000;padding:3px 8px;border-radius:10px;font-size:11px;font-weight:bold}
+.match-league{color:#aaa;font-size:10px}
+.teams{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.team{font-size:13px;font-weight:bold;flex:1}
+.team.right{text-align:right}
+.vs{color:#f0b429;font-weight:900;padding:0 8px}
+.pronostic{background:#0d1020;border-radius:8px;padding:8px;margin-bottom:8px}
+.prono-label{font-size:10px;color:#aaa;margin-bottom:3px}
+.prono-value{color:#00e676;font-weight:bold;font-size:13px}
+.cotes{display:flex;gap:5px}
+.cote-btn{flex:1;background:#0d1020;border:1px solid #333;color:#fff;padding:6px 4px;border-radius:6px;font-size:11px;text-align:center;cursor:pointer;transition:all 0.3s}
+.cote-btn:hover{background:#f0b429;color:#000;border-color:#f0b429}
+.cote-btn.best{border-color:#00e676;color:#00e676}
+.confiance{display:flex;align-items:center;gap:8px;margin-top:8px}
+.confiance-label{font-size:10px;color:#aaa;white-space:nowrap}
+.confiance-bar{flex:1;background:#333;border-radius:5px;height:6px}
+.confiance-fill{height:6px;border-radius:5px;background:linear-gradient(90deg,#f0b429,#00e676)}
+.confiance-pct{font-size:11px;color:#00e676;font-weight:bold}
+.live-card{background:#1f2937;border-radius:10px;padding:12px;margin-bottom:10px;border-left:3px solid #ff3333}
+.live-score{font-size:24px;font-weight:900;color:#fff;text-align:center;padding:8px 0}
+.live-info{background:#ff333322;border-radius:6px;padding:6px;text-align:center;font-size:11px;color:#ff6666}
+.order-section{background:#1f2937;border-radius:12px;padding:20px;margin:15px;text-align:center}
+.order-title{font-size:18px;font-weight:900;color:#f0b429;margin-bottom:10px}
+.order-desc{color:#aaa;font-size:12px;margin-bottom:15px}
+.pack{background:#0d1020;border-radius:10px;padding:12px;margin-bottom:10px;border:1px solid #333}
+.pack.popular{border-color:#f0b429}
+.pack-name{font-size:14px;font-weight:bold;color:#f0b429}
+.pack-price{font-size:22px;font-weight:900;color:#fff;margin:5px 0}
+.pack-features{font-size:11px;color:#aaa;margin-bottom:10px}
+.wa-btn{background:#25D366;color:#fff;border:none;padding:12px 20px;border-radius:25px;font-size:14px;font-weight:bold;cursor:pointer;width:100%;margin-top:5px;display:flex;align-items:center;justify-content:center;gap:8px}
+.wa-btn:hover{background:#1aab52}
+footer{background:#111827;padding:20px;text-align:center;border-top:2px solid #f0b429;margin-top:20px}
+.footer-logo{font-size:20px;font-weight:900;color:#f0b429;margin-bottom:8px}
+.footer-text{font-size:11px;color:#666}
+.date-bar{background:#0d1020;padding:8px;text-align:center;font-size:12px;color:#f0b429;border-bottom:1px solid #333}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">WA<span>MARKET</span>.BET</div>
+  <div class="live-badge">🔴 LIVE</div>
+</header>
+
+<nav>
+  <button class="nav-btn active" onclick="showTab('football',this)">⚽ Football</button>
+  <button class="nav-btn" onclick="showTab('live',this)">🔴 Live</button>
+  <button class="nav-btn" onclick="showTab('basket',this)">🏀 Basket</button>
+  <button class="nav-btn" onclick="showTab('tennis',this)">🎾 Tennis</button>
+  <button class="nav-btn" onclick="showTab('afrique',this)">🌍 Afrique</button>
+  <button class="nav-btn" onclick="showTab('ufc',this)">🥊 UFC</button>
+  <button class="nav-btn" onclick="showTab('commander',this)">🛒 Commander</button>
+</nav>
+
+<div class="hero">
+  <h1>🏆 WAMARKET.BET</h1>
+  <p>Pronostics IA Premium • 50+ Championnats • Mis à jour en temps réel</p>
+</div>
+
+<div class="date-bar" id="dateBar"></div>
+
+<div class="stats-bar">
+  <div class="stat"><div class="stat-num">24</div><div class="stat-label">Matchs</div></div>
+  <div class="stat"><div class="stat-num">8</div><div class="stat-label">En Direct</div></div>
+  <div class="stat"><div class="stat-num">94%</div><div class="stat-label">Précision</div></div>
+  <div class="stat"><div class="stat-num">50+</div><div class="stat-label">Ligues</div></div>
+</div>
+
+<!-- FOOTBALL -->
+<div id="football" class="section active">
+
+  <div class="league-title">🏴󠁧󠁢󠁥󠁮󠁧󠁿 PREMIER LEAGUE</div>
+
+  <div class="match-card">
+    <div class="match-header">
+      <span class="match-time">21:00</span>
+      <span class="match-league">Premier League • Journée 32</span>
+    </div>
+    <div class="teams">
+      <div class="team">Manchester City</div>
+      <div class="vs">VS</div>
+      <div class="team right">Arsenal</div>
+    </div>
+    <div class="pronostic">
+      <div class="prono-label">🤖 Pronostic IA</div>
+      <div class="prono-value">✅ Les 2 équipes marquent + Plus de 2.5 buts</div>
+    </div>
+    <div class="cotes">
+      <div class="cote-btn">1<br><strong>2.10</strong></div>
+      <div class="cote-btn best">N<br><strong>3.40</strong></div>
+      <div class="cote-btn">2<br><strong>3.20</strong></div>
+    </div>
+    <div class="confiance">
+      <span class="confiance-label">Confiance</span>
+      <div class="confiance-bar"><div class="confiance-fill" style="width:87%"></div></div>
+      <span class="confiance-pct">87%</span>
+    </div>
+  </div>
+
+  <div class="match-card">
+    <div class="match-header">
+      <span class="match-time">19:30</span>
+      <span class="match-league">Premier League • Journée 32</span>
+    </div>
+    <div class="teams">
+      <div class="team">Liverpool</div>
+      <div class="vs">VS</div>
+      <div class="team right">Chelsea</div>
+    </div>
+    <div class="pronostic">
+      <div class="prono-label">🤖 Pronostic IA</div>
+      <div class="prono-value">✅ Victoire Liverpool</div>
+    </div>
+    <div class="cotes">
+      <div class="cote-btn best">1<br><strong>1.75</strong></div>
+      <div class="cote-btn">N<br><strong>3.80</strong></div>
+      <div class="cote-btn">2<br><strong>4.50</strong></div>
+    </div>
+    <div class="confiance">
+      <span class="confiance-label">Confiance</span>
+      <div class="confiance-bar"><div class="confiance-fill" style="width:82%"></div></div>
+      <span class="confiance-pct">82%</span>
+    </div>
+  </div>
+
+  <div class="league-title">🇪🇸 LA LIGA</div>
+
+  <div class="match-card">
+    <div class="match-header">
+      <span class="match-time">20:00</span>
+      <span class="match-league">La Liga • Journée 30</span>
+    </div>
+    <div class="teams">
+      <div class="team">Real Madrid</div>
+      <div class="vs">VS</div>
+      <div class="team right">Barcelona</div>
+    </div>
+    <div class="pronostic">
+      <div class="prono-label">🤖 Pronostic IA</div>
+      <div class="prono-value">✅ Plus de 2.5 buts</div>
+    </div>
+    <div class="cotes">
+      <div class="cote-btn best">1<br><strong>2.20</strong></div>
+      <div class="cote-btn">N<br><strong>3.10</strong></div>
+      <div class="cote-btn">2<br><strong>3.00</strong></div>
+    </div>
+    <div class="confiance">
+      <span class="confiance-label">Confiance</span>
+      <div class="confiance-bar"><div class="confiance-fill" style="width:79%"></div></div>
+      <span class="confiance-pct">79%</span>
+    </div>
+  </div>
+
+  <div class="league-title">🇩🇪 BUNDESLIGA</div>
+
+  <div class="match-card">
+    <div class="match-header">
+      <span class="match-time">18:30</span>
+      <span class="match-league">Bundesliga • Journée 28</span>
+    </div>
+    <div class="teams">
+      <div class="team">Bayern Munich</div>
+      <div class="vs">VS</div>
+      <div class="team right">Dortmund</div>
+    </div>
+    <div class="pronostic">
+      <div class="prono-label">🤖 Pronostic IA</div>
+      <div class="prono-value">✅ Victoire Bayern + Plus de 2.5</div>
+    </div>
+    <div class="cotes">
+      <div class="cote-btn best">1<br><strong>1.65</strong></div>
+      <div class="cote-btn">N<br><strong>4.00</strong></div>
+      <div class="cote-btn">2<br><strong>5.00</strong></div>
+    </div>
+    <div class="confiance">
+      <span class="confiance-label">Confiance</span>
+      <div class="confiance-bar"><div class="confiance-fill" style="width:85%"></div></div>
+      <span class="confiance-pct">85%</span>
+    </div>
+  </div>
+
+  <div class="league-title">🇫🇷 LIGUE 1</div>
+
+  <div class="match-card">
+    <div class="match-header">
+      <span class="match-time">21:05</span>
+      <span class="match-league">Ligue 1 • Journée 29</span>
+    </div>
+    <div class="teams">
+      <div class="team">PSG</div>
+      <div class="vs">VS</div>
+      <div class="team right">Marseille</div>
+    </div>
+    <div class="pronostic">
+      <div class="prono-label">🤖 Pronostic IA</div>
+      <div class="prono-value">✅ Victoire PSG</div>
+    </div>
+    <div class="cotes">
+      <div class="cote-btn best">1<br><strong>1.55</strong></div>
+      <div class="cote-btn">N<br><strong>4.20</strong></div>
+      <div class="cote-btn">2<br><strong>5.50</strong></div>
+    </div>
+    <div class="confiance">
+      <span class="confiance-label">Confiance</span>
+      <div class="confiance-bar"><div class="confiance-fill" style="width:88%"></div></div>
+      <span class="confiance-pct">88%</span>
+    </div>
+  </div>
+
+  <div class="league-title">🇮🇹 SERIE A</div>
+
+  <div class="match-card">
+    <div class="match-header">
+      <span class="match-time">20:45</span>
+      <span class="match-league">Serie A • Journée 31</span>
+    </div>
+    <div class="teams">
+      <div class="team">Inter Milan</div>
+      <div class="vs">VS</div>
+      <div class="team right">Juventus</div>
+    </div>
+    <div class="pronostic">
+      <div class="prono-label">🤖 Pronostic IA</div>
+      <div class="prono-value">✅ Les 2 équipes marquent</div>
+    </div>
+    <div class="cotes">
+      <div class="cote-btn best">1<br><strong>2.05</strong></div>
+      <div class="cote-btn">N<br><strong>3.30</strong></div>
+      <div class="cote-btn">2<br><strong>3.50</strong></div>
+    </div>
+    <div class="confiance">
+      <span class="confiance-label">Confiance</span>
+      <div class="confiance-bar"><div class="confiance-fill" style="width:75%"></div></div>
+      <span class="confiance-pct">75%</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- LIVE -->
+<div id="live" class="section">
+
+  <div class="league-title">🔴 MATCHS EN DIRECT</div>
+
+  <div class="live-card">
+    <div class="match-header">
+      <span class="match-time" style="background:#ff3333">🔴 65'</span>
+      <span class="match-league">Champions League</span>
+    </div>
+    <div class="teams">
+      <div class="team">Real Madrid</div>
+      <div class="vs">VS</div>
+      <div class="team right">Man City</div>
+    </div>
+    <div class="live-score">2 — 1</div>
+    <div class="live-info">🎯 Prono IA : Real Madrid gagne — EN COURS ✅</div>
+    <div class="confiance" style="margin-top:10px">
+      <span class="confiance-label">Confiance</span>
+      <div class="confiance-bar"><div class="confiance-fill" style="width:91%"></div></div>
+      <span class="confiance-pct">91%</span>
+    </div>
+  </div>
+
+  <div class="live-card">
+    <div class="match-header">
+      <span class="match-time" style="background:#ff3333">🔴 38'</span>
+      <span class="match-league">Europa League</span>
+    </div>
+    <div class="teams">
+      <div class="team">Atletico Madrid</div>
+      <div class="vs">VS</div>
+      <div class="team right">Roma</div>
+    </div>
+    <div class="live-score">1 — 0</div>
+    <div class="live-info">🎯 Prono IA : Plus de 1.5 buts — EN COURS ✅</div>
+    <div class="confiance" style="margin-top:10px">
+      <span class="confiance-label">Confiance</span>
+      <div class="confiance-bar"><div class="confiance-fill" style="width:78%"></div></div>
+      <span class="confiance-pct">78%</span>
+    </div>
+  </div>
+
+  <div class="live-card">
+    <div class="match-header">
+      <span class="match-time" style="background:#ff3333">🔴 72'</span>
+      <span class="match-league">NBA</span>
+    </div>
+    <div class="teams">
+      <div class="team">Lakers</div>
+      <div class="vs">VS</div>
+      <div class="team right">Warriors</div>
+    </div>
+    <div class="live-score">98 — 94</div>
+    <div class="live-info">🎯 Prono IA : Plus de 215 pts — EN COURS ✅</div>
+    <div class="confiance" style="margin-top:10px">
+      <span class="confiance-label">Confiance</span>
+      <div class="confiance-bar"><div class="confiance-fill" style="width:83%"></div></div>
+      <span class="confiance-pct">83%</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- BASKET -->
+<div id="basket" class="section">
+
+  <div class="league-title">🏀 NBA</div>
+
+  <div class="match-card">
+    <div class="match-header">
+      <span class="match-time">01:30</span>
+      <span class="match-league">NBA • Playoffs</span>
+    </div>
+    <div class="teams">
+      <div class="team">Boston Celtics</div>
+      <div class="vs">VS</div>
+      <div class="team right">Miami Heat</div>
+    </div>
+    <div class="pronostic">
+      <div class="prono-label">🤖 Pronostic IA</div>
+      <div class="prono-value">✅ Boston + Plus de 215 pts</div>
+    </div>
+    <div class="cotes">
+      <div class="cote-btn best">1<br><strong>1.80</strong></div>
+      <div class="cote-btn">2<br><strong>2.10</strong></div>
+    </div>
+    <div class="confiance">
+      <span class="confiance-label">Confiance</span>
+      <div class="confiance-bar"><div class="confiance-fill" style="width:80%"></div></div>
+      <span class="confiance-pct">80%</span>
+    </div>
+  </div>
+
+  <div class="league-title">🏀 EUROLEAGUE</div>
+
+  <div class="match-card">
+    <div class="match-header">
+      <span class="match-time">20:30</span>
+      <span class="match-league">Euroleague</span>
+    </div>
+    <div class="teams">
+      <div class="team">Real Madrid</div>
+      <div class="vs">VS</div>
+      <div class="team right">CSKA Moscou</div>
+    </div>
+    <div class="pronostic">
+      <div class="prono-label">🤖 Pronostic IA</div>
+      <div class="prono-value">✅ Victoire Real Madrid</div>
+    </div>
+    <div class="cotes">
+      <div class="cote-btn best">1<br><strong>1.70</strong></div>
+      <div class="cote-btn">2<br><strong>2.30</strong></div>
+    </div>
+    <div class="confiance">
+      <span class="confiance-label">Confiance</span>
+      <div class="confiance-bar"><div class="confiance-fill" style="width:76%"></div></div>
+      <span class="confiance-pct">76%</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- TENNIS -->
+<div id="tennis" class="section">
+
+  <div class="league-title">🎾 ATP MASTERS</div>
+
+  <div class="match-card">
+    <div class="match-header">
+      <span class="match-time">14:00</span>
+      <span class="match-league">ATP Masters 1000</span>
+    </div>
+    <div class="teams">
+      <div class="team">Djokovic</div>
+      <div class="vs">VS</div>
+      <div class="team right">Alcaraz</div>
+    </div>
+    <div class="pronostic">
+      <div class="prono-label">🤖 Pronostic IA</div>
+      <div class="prono-value">✅ Plus de 3.5 sets</div>
+    </div>
+    <div class="cotes">
+      <div class="cote-btn best">1<br><strong>1.90</strong></div>
+      <div class="cote-btn">2<br><strong>2.00</strong></div>
+    </div>
+    <div class="confiance">
+      <span class="confiance-label">Confiance</span>
+      <div class="confiance-bar"><div class="confiance-fill" style="width:73%"></div></div>
+      <span class="confiance-pct">73%</span>
+    </div>
+  </div>
+
+  <div class="match-card">
+    <div class="match-header">
+      <span class="match-time">16:30</span>
+      <span class="match-league">WTA Premier</span>
+    </div>
+    <div class="teams">
+      <div class="team">Swiatek</div>
+      <div class="vs">VS</div>
+      <div class="team right">Sabalenka</div>
+    </div>
+    <div class="pronostic">
+      <div class="prono-label">🤖 Pronostic IA</div>
+      <div class="prono-value">✅ Victoire Swiatek</div>
+    </div>
+    <div class="cotes">
+      <div class="cote-btn best">1<br><strong>1.65</strong></div>
+      <div class="cote-btn">2<br><strong>2.40</strong></div>
+    </div>
+    <div class="confiance">
+      <span class="confiance-label">Confiance</span>
+      <div class="confiance-bar"><div class="confiance-fill" style="width:84%"></div></div>
+      <span class="confiance-pct">84%</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- AFRIQUE -->
+<div id="afrique" class="section">
+
+  <div class="league-title">🌍 LIGUE DES CHAMPIONS CAF</div>
+
+  <div class="match-card">
+    <div class="match-header">
+      <span class="match-time">19:00</span>
+      <span class="match-league">CAF Champions League</span>
+    </div>
+    <div class="teams">
+      <div class="team">Al Ahly</div>
+      <div class="vs">VS</div>
+      <div class="team right">Wydad</div>
+    </div>
+    <div class="pronostic">
+      <div class="prono-label">🤖 Pronostic IA</div>
+      <div class="prono-value">✅ Victoire Al Ahly</div>
+    </div>
+    <div class="cotes">
+      <div class="cote-btn best">1<br><strong>1.95</strong></div>
+      <div class="cote-btn">N<br><strong>3.20</strong></div>
+      <div class="cote-btn">2<br><strong>3.80</strong></div>
+    </div>
+    <div class="confiance">
+      <span class="confiance-label">Confiance</span>
+      <div class="confiance-bar"><div class="confiance-fill" style="width:81%"></div></div>
+      <span class="confiance-pct">81%</span>
+    </div>
+  </div>
+
+  <div class="league-title">🇨🇮 LIGUE 1 CÔTE D'IVOIRE</div>
+
+  <div class="match-card">
+    <div class="match-header">
+      <span class="match-time">17:00</span>
+      <span class="match-league">MTN Ligue 1 CI</span>
+    </div>
+    <div class="teams">
+      <div class="team">ASEC Mimosas</div>
+      <div class="vs">VS</div>
+      <div class="team right">Africa Sports</div>
+    </div>
+    <div class="pronostic">
+      <div class="prono-label">🤖 Pronostic IA</div>
+      <div class="prono-value">✅ Victoire ASEC</div>
+    </div>
+    <div class="cotes">
+      <div class="cote-btn best">1<br><strong>1.70</strong></div>
+      <div class="cote-btn">N<br><strong>3.50</strong></div>
+      <div class="cote-btn">2<br><strong>4.00</strong></div>
+    </div>
+    <div class="confiance">
+      <span class="confiance-label">Confiance</span>
+      <div class="confiance-bar"><div class="confiance-fill" style="width:77%"></div></div>
+      <span class="confiance-pct">77%</span>
+    </div>
+  </div>
+
+  <div class="league-title">🇸🇳 LIGUE 1 SÉNÉGAL</div>
+
+  <div class="match-card">
+    <div class="match-header">
+      <span class="match-time">16:00</span>
+      <span class="match-league">Ligue 1 Sénégal</span>
+    </div>
+    <div class="teams">
+      <div class="team">Génération Foot</div>
+      <div class="vs">VS</div>
+      <div class="team right">Jaraaf</div>
+    </div>
+    <div class="pronostic">
+      <div class="prono-label">🤖 Pronostic IA</div>
+      <div class="prono-value">✅ Plus de 2 buts</div>
+    </div>
+    <div class="cotes">
+      <div class="cote-btn best">1<br><strong>2.10</strong></div>
+      <div class="cote-btn">N<br><strong>3.00</strong></div>
+      <div class="cote-btn">2<br><strong>3.20</strong></div>
+    </div>
+    <div class="confiance">
+      <span class="confiance-label">Confiance</span>
+      <div class="confiance-bar"><div class="confiance-fill" style="width:72%"></div></div>
+      <span class="confiance-pct">72%</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- UFC -->
+<div id="ufc" class="section">
+
+  <div class="league-title">🥊 UFC / MMA</div>
+
+  <div class="match-card">
+    <div class="match-header">
+      <span class="match-time">03:00</span>
+      <span class="match-league">UFC 300 • Main Event</span>
+    </div>
+    <div class="teams">
+      <div class="team">Jon Jones</div>
+      <div class="vs">VS</div>
+      <div class="team right">Stipe Miocic</div>
+    </div>
+    <div class="pronostic">
+      <div class="prono-label">🤖 Pronostic IA</div>
+      <div class="prono-value">✅ Victoire Jones par KO</div>
+    </div>
+    <div class="cotes">
+      <div class="cote-btn best">1<br><strong>1.60</strong></div>
+      <div class="cote-btn">2<br><strong>2.50</strong></div>
+    </div>
+    <div class="confiance">
+      <span class="confiance-label">Confiance</span>
+      <div class="confiance-bar"><div class="confiance-fill" style="width:86%"></div></div>
+      <span class="confiance-pct">86%</span>
+    </div>
+  </div>
+
+  <div class="match-card">
+    <div class="match-header">
+      <span class="match-time">01:00</span>
+      <span class="match-league">UFC 300 • Co-Main</span>
+    </div>
+    <div class="teams">
+      <div class="team">Pereira</div>
+      <div class="vs">VS</div>
+      <div class="team right">Hill</div>
+    </div>
+    <div class="pronostic">
+      <div class="prono-label">🤖 Pronostic IA</div>
+      <div class="prono-value">✅ Victoire Pereira</div>
+    </div>
+    <div class="cotes">
+      <div class="cote-btn best">1<br><strong>1.75</strong></div>
+      <div class="cote-btn">2<br><strong>2.20</strong></div>
+    </div>
+    <div class="confiance">
+      <span class="confiance-label">Confiance</span>
+      <div class="confiance-bar"><div class="confiance-fill" style="width:82%"></div></div>
+      <span class="confiance-pct">82%</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- COMMANDER -->
+<div id="commander" class="section">
+
+  <div class="order-section">
+    <div class="order-title">🏆 ABONNEMENT PREMIUM</div>
+    <div class="order-desc">Accédez aux pronostics VIP avec un taux de réussite de 94%</div>
+
+    <div class="pack">
+      <div class="pack-name">📅 Pack Journalier</div>
+      <div class="pack-price">2 000 FCFA</div>
+      <div class="pack-features">✅ 5 pronostics sélectionnés • ✅ Analyse complète • ✅ Support WhatsApp</div>
+      <button class="wa-btn" onclick="commander('Pack Journalier - 2000 FCFA')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M5.337 21.684l.03.089c.218.649.493 1.25.82 1.797l.006.009C7.562 25.268 9.637 26 12 26c7.732 0 14-6.268 14-14S19.732-2 12-2 -2 4.268-2 12c0 2.363.732 4.438 1.997 6.114l.009.007.089.03-1.08 3.957 4.322-1.424z" fill="none"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.524 3.66 1.438 5.168L2 22l4.832-1.438A9.96 9.96 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18a7.96 7.96 0 01-4.076-1.12l-.292-.173-3.028.9.9-3.028-.173-.292A7.96 7.96 0 014 12c0-4.411 3.589-8 8-8s8 3.589 8 8-3.589 8-8 8z"/></svg>
+        Commander sur WhatsApp
+      </button>
+    </div>
+
+    <div class="pack popular">
+      <div class="pack-name">⭐ Pack Hebdomadaire</div>
+      <div class="pack-price">10 000 FCFA</div>
+      <div class="pack-features">✅ 7 jours de pronostics • ✅ Accès VIP • ✅ Analyses détaillées • ✅ Support 24/7</div>
+      <button class="wa-btn" onclick="commander('Pack Hebdomadaire - 10000 FCFA')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.524 3.66 1.438 5.168L2 22l4.832-1.438A9.96 9.96 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18a7.96 7.96 0 01-4.076-1.12l-.292-.173-3.028.9.9-3.028-.173-.292A7.96 7.96 0 014 12c0-4.411 3.589-8 8-8s8 3.589 8 8-3.589 8-8 8z"/></svg>
+        Commander sur WhatsApp
+      </button>
+    </div>
+
+    <div class="pack">
+      <div class="pack-name">👑 Pack Mensuel</div>
+      <div class="pack-price">35 000 FCFA</div>
+      <div class="pack-features">✅ 30 jours • ✅ Accès PREMIUM • ✅ Toutes les ligues • ✅ Garantie satisfaction</div>
+      <button class="wa-btn" onclick="commander('Pack Mensuel - 35000 FCFA')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.524 3.66 1.438 5.168L2 22l4.832-1.438A9.96 9.96 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18a7.96 7.96 0 01-4.076-1.12l-.292-.173-3.028.9.9-3.028-.173-.292A7.96 7.96 0 014 12c0-4.411 3.589-8 8-8s8 3.589 8 8-3.589 8-8 8z"/></svg>
+        Commander sur WhatsApp
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-logo">WAMARKET.BET</div>
+  <div class="footer-text">© 2025 WaMarket.bet • Pronostics Premium • Paris responsables</div>
+  <div class="footer-text" style="margin-top:5px;color:#f0b429">+225 XX XX XX XX XX</div>
+</footer>
+
+<script>
+function showTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+
+function commander(pack) {
+  var msg = "Bonjour WAMARKET.BET ! Je voudrais commander le " + pack;
+  var url = "https://wa.me/22500000000?text=" + encodeURIComponent(msg);
+  window.open(url, '_blank');
+}
+
+var jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+var mois = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+var d = new Date();
+document.getElementById('dateBar').innerHTML = '📅 ' + jours[d.getDay()] + ' ' + d.getDate() + ' ' + mois[d.getMonth()] + ' ' + d.getFullYear();
+</script>
+
+</body>
+</html>
