@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WAMARKET.BET - Pronostics Sportifs</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: Arial, sans-serif; background: #0a0e1a; color: #fff; }
+
+header {
+  background: linear-gradient(135deg, #1a1f35, #0d1020);
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #f0b429;
+}
+
+.logo { font-size: 28px; font-weight: 900; color: #f0b429; }
+.logo span { color: #fff; }
+
+.live-badge {
+  background: #ff3333;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+nav {
+  background: #111827;
+  display: flex;
+  gap: 5px;
+  padding: 10px;
+  overflow-x: auto;
+  border-bottom: 1px solid #333;
+}
+
+nav button {
+  background: #1f2937;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-size: 13px;
+}
+
+nav button.active, nav button:hover { background: #f0b429; color: #000; }
+
+.hero {
+  background: linear-gradient(135deg, #1a1f35, #0d1020);
+  padding: 30px 20px;
+  text-align: center;
+  border-bottom: 1px solid #333;
+}
+
+.hero h1 { font-size: 22px; color: #f0b429; margin-bottom: 10px; }
+.hero p { color: #aaa; font-size: 14px; }
+
+.stats-bar {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  padding: 15px;
+  background: #111827;
+  border-bottom: 1px solid #333;
+}
+
+.stat { text-align: center; }
+.stat-num { font-size: 22px; font-weight: bold; color: #f0b429; }
+.stat-label { font-size: 11px; color: #aaa; }
+
+.section-title {
+  padding: 15px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #f0b429;
+  border-left: 4px solid #f0b429;
+  margin: 15px;
+  background: #111827;
+  border-radius: 5px;
+}
+
+.match-card {
+  background: #111827;
+  margin: 10px 15px;
+  border-radius: 12px;
+  padding: 15px;
+  border: 1px solid #1f2937;
+  transition: transform 0.2s;
+}
+
+.match-card:hover { transform: translateY(-2px); border-color: #f0b429; }
+
+.match-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.league { font-size: 11px; color: #f0b429; background: #1f2937; padding: 3px 8px; border-radius: 10px; }
+.match-time { font-size: 11px; color: #aaa; }
+
+.teams {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.team { text-align: center; flex: 1; }
+.team-name { font-size: 14px; font-weight: bold; }
+.team-flag { font-size: 24px; margin-bottom: 5px; }
+.vs { color: #f0b429; font-weight: bold; font-size: 18px; }
+
+.prono-box {
+  background: #0a0e1a;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+
+.prono-title { font-size: 11px; color: #aaa; margin-bottom: 8px; }
+
+.options { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.option {
+  flex: 1;
+  text-align: center;
+  padding: 8px 5px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: bold;
+  min-width: 60px;
+}
+
+.opt-1 { background: #1e3a2f; border: 1px solid #22c55e; color: #22c55e; }
+.opt-n { background: #2d2a1a; border: 1px solid #f0b429; color: #f0b429; }
+.opt-2 { background: #2a1a1a; border: 1px solid #ef4444; color: #ef4444; }
+
+.confidence {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.conf-bar { flex: 1; height: 8px; background: #1f2937; border-radius: 4px; overflow: hidden; }
+.conf-fill { height: 100%; border-radius: 4px; transition: width 1s; }
+.conf-faible { background: #ef4444; }
+.conf-moyen { background: #f0b429; }
+.conf-eleve { background: #22c55e; }
+.conf-tres-eleve { background: #00d4ff; }
+
+.conf-label { font-size: 11px; font-weight: bold; min-width: 80px; }
+.conf-pct { font-size: 13px; font-weight: bold; min-width: 40px; text-align: right; }
+
+.badge-faible { color: #ef4444; }
+.badge-moyen { color: #f0b429; }
+.badge-eleve { color: #22c55e; }
+.badge-tres-eleve { color: #00d4ff; }
+
+.premium-card {
+  background: linear-gradient(135deg, #1a1f35, #0d1020);
+  margin: 10px 15px;
+  border-radius: 12px;
+  padding: 15px;
+  border: 2px solid #f0b429;
+  position: relative;
+  overflow: hidden;
+}
+
+.premium-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  backdrop-filter: blur(3px);
+}
+
+.premium-badge {
+  background: linear-gradient(135deg, #f0b429, #ff8c00);
+  color: #000;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+.premium-lock { font-size: 30px; margin-bottom: 10px; }
+
+.order-btn {
+  background: linear-gradient(135deg, #25d366, #128c7e);
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-weight: bold;
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  animation: pulse 2s infinite;
+}
+
+.order-btn:hover { opacity: 0.9; }
+
+.blurred { filter: blur(5px); pointer-events: none; }
+
+footer {
+  background: #111827;
+  padding: 20px;
+  text-align: center;
+  margin-top: 30px;
+  border-top: 2px solid #f0b429;
+}
+
+.footer-logo { font-size: 20px; font-weight: bold; color: #f0b429; margin-bottom: 5px; }
+.footer-company { color: #aaa; font-size: 12px; margin-top: 10px; }
+.footer-company a { color: #f0b429; text-decoration: none; }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+.update-time {
+  text-align: center;
+  color: #aaa;
+  font-size: 11px;
+  padding: 10px;
+}
+
+.score-prediction {
+  text-align: center;
+  background: #1f2937;
+  border-radius: 8px;
+  padding: 8px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: #f0b429;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">WA<span>MARKET</span>.BET</div>
+  <div style="display:flex;gap:10px;align-items:center">
+    <div class="live-badge">🔴 LIVE</div>
+    <div style="font-size:11px;color:#aaa" id="clock"></div>
+  </div>
+</header>
+
+<nav>
+  <button class="active" onclick="showTab('tous')">⚽ Tous</button>
+  <button onclick="showTab('football')">🏆 Football</button>
+  <button onclick="showTab('basketball')">🏀 Basketball</button>
+  <button onclick="showTab('tennis')">🎾 Tennis</button>
+  <button onclick="showTab('rugby')">🏉 Rugby</button>
+  <button onclick="showTab('hockey')">🏒 Hockey</button>
+  <button onclick="showTab('baseball')">⚾ Baseball</button>
+  <button onclick="showTab('boxe')">🥊 Boxe</button>
+</nav>
+
+<div class="hero">
+  <h1>🏆 Pronostics IA Premium</h1>
+  <p>Analyse intelligente • Matchs du monde entier • Mis à jour en temps réel</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><div class="stat-num">94%</div><div class="stat-label">Précision</div></div>
+  <div class="stat"><div class="stat-num" id="matchCount">47</div><div class="stat-label">Matchs</div></div>
+  <div class="stat"><div class="stat-num">🌍</div><div class="stat-label">Mondial</div></div>
+</div>
+
+<div id="update-bar" class="update-time">🔄 Dernière mise à jour : <span id="lastUpdate"></span></div>
+
+<div id="tous" class="tab-content active">
+
+  <div class="section-title">🔴 MATCHS EN DIRECT</div>
+
+  <!-- Match 1 - Faible -->
+  <div class="match-card">
+    <div class="match-header">
+      <span class="league">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League</span>
+      <span class="match-time">🔴 LIVE 67'</span>
+    </div>
+    <div class="teams">
+      <div class="team"><div class="team-flag">🔵</div><div class="team-name">Chelsea</div></div>
+      <div class="vs">1 - 0</div>
+      <div class="team"><div class="team-flag">🔴</div><div class="team-name">Arsenal</div></div>
+    </div>
+    <div class="prono-box">
+      <div class="prono-title">💡 MEILLEURE OPTION IA :</div>
+      <div class="options">
+        <div class="option opt-1">✅ 1X<br><small>Chelsea/Nul</small></div>
+        <div class="option opt-n">📊 +2.5 Buts<br><small>Score élevé</small></div>
+        <div class="option opt-2">🎯 Chelsea Win<br><small>Victoire</small></div>
+      </div>
+    </div>
+    <div class="confidence">
+      <span class="conf-label badge-faible">⚠️ FAIBLE</span>
+      <div class="conf-bar"><div class="conf-fill conf-faible" style="width:35%"></div></div>
+      <span class="conf-pct">35%</span>
+    </div>
+    <div class="score-prediction">🎯 Score prédit par IA : Chelsea 2 - 0 Arsenal</div>
+  </div>
+
+  <!-- Match 2 - Moyen -->
+  <div class="match-card">
+    <div class="match-header">
+      <span class="league">🇪🇸 La Liga</span>
+      <span class="match-time">🔴 LIVE 23'</span>
+    </div>
+    <div class="teams">
+      <div class="team"><div class="team-flag">⚪</div><div class="team-name">Real Madrid</div></div>
+      <div class="vs">0 - 0</div>
+      <div class="team"><div class="team-flag">🔵🔴</div><div class="team-name">Barcelone</div></div>
+    </div>
+    <div class="prono-box">
+      <div class="prono-title">💡 MEILLEURE OPTION IA :</div>
+      <div class="options">
+        <div class="option opt-1">✅ BTTS<br><small>Les 2 marquent</small></div>
+        <div class="option opt-n">📊 +3.5 Buts<br><small>Gros score</small></div>
+        <div class="option opt-2">🎯 Nul<br><small>Match serré</small></div>
+      </div>
+    </div>
+    <div class="confidence">
+      <span class="conf-label badge-moyen">📊 MOYEN</span>
+      <div class="conf-bar"><div class="conf-fill conf-moyen" style="width:55%"></div></div>
+      <span class="conf-pct">55%</span>
+    </div>
+    <div class="score-prediction">🎯 Score prédit par IA : Real Madrid 2 - 2 Barcelone</div>
+  </div>
+
+  <!-- Match 3 - Élevé -->
+  <div class="match-card">
+    <div class="match-header">
+      <span class="league">🇩🇪 Bundesliga</span>
+      <span class="match-time">🔴 LIVE 45'</span>
+    </div>
+    <div class="teams">
+      <div class="team"><div class="team-flag">🔴</div><div class="team-name">Bayern Munich</div></div>
+      <div class="vs">3 - 0</div>
+      <div class="team"><div class="team-flag">⚫🟡</div><div class="team-name">Dortmund</div></div>
+    </div>
+    <div class="prono-box">
+      <div class="prono-title">💡 MEILLEURE OPTION IA :</div>
+      <div class="options">
+        <div class="option opt-1">✅ Bayern Win<br><small>Victoire</small></div>
+        <div class="option opt-n">📊 +4.5 Buts<br><small>Score élevé</small></div>
+        <div class="option opt-2">🎯 -0.5 Dortmund<br><small>Pas de but</small></div>
+      </div>
+    </div>
+    <div class="confidence">
+      <span class="conf-label badge-eleve">✅ ÉLEVÉ</span>
+      <div class="conf-bar"><div class="conf-fill conf-eleve" style="width:75%"></div></div>
+      <span class="conf-pct">75%</span>
+    </div>
+    <div class="score-prediction">🎯 Score prédit par IA : Bayern 5 - 0 Dortmund</div>
+  </div>
+
+  <div class="section-title">📅 MATCHS À VENIR</div>
+
+  <!-- Match 4 - Très Élevé -->
+  <div class="match-card">
+    <div class="match-header">
+      <span class="league">🇫🇷 Ligue 1</span>
+      <span class="match-time">⏰ 20:45</span>
+    </div>
+    <div class="teams">
+      <div class="team"><div class="team-flag">🔵🔴</div><div class="team-name">PSG</div></div>
+      <div class="vs">VS</div>
+      <div class="team"><div class="team-flag">🔴⚪</div><div class="team-name">Monaco</div></div>
+    </div>
+    <div class="prono-box">
+      <div class="prono-title">💡 MEILLEURE OPTION IA :</div>
+      <div class="options">
+        <div class="option opt-1">✅ PSG Win<br><small>Victoire PSG</small></div>
+        <div class="option opt-n">📊 +2.5 Buts<br><small>Buts garantis</small></div>
+        <div class="option opt-2">🎯 BTTS<br><small>Les 2 marquent</small></div>
+      </div>
+    </div>
+    <div class="confidence">
+      <span class="conf-label badge-tres-eleve">💎 TRÈS ÉLEVÉ</span>
+      <div class="conf-bar"><div class="conf-fill conf-tres-eleve" style="width:90%"></div></div>
+      <span class="conf-pct">90%</span>
+    </div>
+    <div class="score-prediction">🎯 Score prédit par IA : PSG 3 - 1 Monaco</div>
+  </div>
+
+  <!-- Match 5 - PREMIUM BLOQUÉ -->
+  <div class="premium-card">
+    <div class="match-header">
+      <span class="league">🇮🇹 Serie A</span>
+      <span class="match-time">⏰ 21:00</span>
+    </div>
+    <div class="teams blurred">
+      <div class="team"><div class="team-flag">⚫🔵</div><div class="team-name">Inter Milan</div></div>
+      <div class="vs">VS</div>
+      <div class="team"><div class="team-flag">⚫🔴</div><div class="team-name">AC Milan</div></div>
+    </div>
+    <div class="prono-box blurred">
+      <div class="options">
+        <div class="option opt-1">✅ Option 1</div>
+        <div class="option opt-n">📊 Option 2</div>
+        <div class="option opt-2">🎯 Option 3</div>
+      </div>
+    </div>
+    <div class="premium-overlay">
+      <div class="premium-badge">👑 PREMIUM</div>
+      <div class="premium-lock">🔒</div>
+      <p style="font-size:12px;color:#aaa;margin-bottom:15px;text-align:center">Pronostic exclusif à 95%<br>Débloquez pour voir</p>
+      <a href="https://wa.me/2250170292408?text=Bonjour%20je%20veux%20commander%20le%20PREMIUM%20WAMARKET.BET" class="order-btn" target="_blank">
+        📱 Commander sur WhatsApp
+      </a>
+    </div>
+  </div>
+
+  <!-- Match 6 - PREMIUM BLOQUÉ -->
+  <div class="premium-card">
+    <div class="match-header">
+      <span class="league">🏀 NBA</span>
+      <span class="match-time">⏰ 02:30</span>
+    </div>
+    <div class="teams blurred">
+      <div class="team"><div class="team-flag">🟡🟣</div><div class="team-name">Lakers</div></div>
+      <div class="vs">VS</div>
+      <div class="team"><div class="team-flag">🟢⚪</div><div class="team-name">Celtics</div></div>
+    </div>
+    <div class="prono-box blurred">
+      <div class="options">
+        <div class="option opt-1">✅ Option 1</div>
+        <div class="option opt-n">📊 Option 2</div>
+        <div class="option opt-2">🎯 Option 3</div>
+      </div>
+    </div>
+    <div class="premium-overlay">
+      <div class="premium-badge">👑 PREMIUM</div>
+      <div class="premium-lock">🔒</div>
+      <p style="font-size:12px;color:#aaa;margin-bottom:15px;text-align:center">Analyse NBA Premium 93%<br>Débloquez pour voir</p>
+      <a href="https://wa.me/2250170292408?text=Bonjour%20je%20veux%20commander%20le%20PREMIUM%20WAMARKET.BET" class="order-btn" target="_blank">
+        📱 Commander sur WhatsApp
+      </a>
+    </div>
+  </div>
+
+  <!-- Match 7 - PREMIUM BLOQUÉ -->
+  <div class="premium-card">
+    <div class="match-header">
+      <span class="league">🎾 ATP Masters</span>
+      <span class="match-time">⏰ 14:00</span>
+    </div>
+    <div class="teams blurred">
+      <div class="team"><div class="team-flag">🇷🇸</div><div class="team-name">Djokovic</div></div>
+      <div class="vs">VS</div>
+      <div class="team"><div class="team-flag">🇪🇸</div><div class="team-name">Alcaraz</div></div>
+    </div>
+    <div class="prono-box blurred">
+      <div class="options">
+        <div class="option opt-1">✅ Option 1</div>
+        <div class="option opt-n">📊 Option 2</div>
+        <div class="option opt-2">🎯 Option 3</div>
+      </div>
+    </div>
+    <div class="premium-overlay">
+      <div class="premium-badge">👑 PREMIUM</div>
+      <div class="premium-lock">🔒</div>
+      <p style="font-size:12px;color:#aaa;margin-bottom:15px;text-align:center">Pronostic Tennis Premium 97%<br>Débloquez pour voir</p>
+      <a href="https://wa.me/2250170292408?text=Bonjour%20je%20veux%20commander%20le%20PREMIUM%20WAMARKET.BET" class="order-btn" target="_blank">
+        📱 Commander sur WhatsApp
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-logo">WAMARKET.BET</div>
+  <p style="color:#aaa;font-size:12px">Pronostics IA • Analyse Professionnelle</p>
+  <div style="margin:15px 0">
+    <a href="https://wa.me/2250170292408" style="color:#25d366;font-size:13px">📱 WhatsApp : +225 0170292408</a>
+  </div>
+  <div class="footer-company">
+    © 2024 <a href="tel:0170292408">ROGWEB SERVICE — 0170292408</a> • Tous droits réservés
+  </div>
+</footer>
+
+<script>
+function showTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  const el = document.getElementById(tab);
+  if(el) el.classList.add('active');
+  event.target.classList.add('active');
+}
+
+function updateClock() {
+  const now = new Date();
+  document.getElementById('clock').textContent = now.toLocaleTimeString('fr-FR');
+  document.getElementById('lastUpdate').textContent = now.toLocaleTimeString('fr-FR');
+}
+
+setInterval(updateClock, 1000);
+updateClock();
+
+// Animate bars on load
+window.addEventListener('load', () => {
+  document.querySelectorAll('.conf-fill').forEach(bar => {
+    const w = bar.style.width;
+    bar.style.width = '0%';
+    setTimeout(() => { bar.style.width = w; }, 300);
+  });
+});
+</script>
+</body>
+</html>
